@@ -4,7 +4,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_serializer
 
-from app.domain import NewPayment
+from app.payments.domain import NewPayment
 
 
 class PaymentIn(BaseModel):

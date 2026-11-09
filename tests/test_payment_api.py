@@ -9,7 +9,7 @@ async def test_create_idempotency_and_lookup(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
     from app.main import app
     from app.db import engine, Base, Session
-    from app.models import Outbox, Payment
+    from app.payments.models import Outbox, Payment
 
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.create_all)

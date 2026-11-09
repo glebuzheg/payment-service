@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager, suppress
 
 from fastapi import FastAPI
 
-from app.api import router
-from app.outbox import publish_forever
+from app.payments.router import router
+from app.messaging.outbox import publish_forever
 
 
 @asynccontextmanager

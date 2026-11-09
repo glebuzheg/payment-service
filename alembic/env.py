@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlalchemy import pool
 
 from app.db import Base
-from app import models  # noqa: F401 - register tables in Base.metadata
+from app.payments import models  # noqa: F401 - register tables in Base.metadata
 
 
 config = context.config

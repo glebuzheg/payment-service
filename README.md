@@ -38,9 +38,6 @@ curl -H "X-API-Key: $API_KEY" \
 
 Таблицы `payments` и `outbox` создаёт Alembic при старте API. Outbox publisher выбирает строки с `FOR UPDATE SKIP LOCKED`, публикует durable сообщение в `payments.new` и проставляет `published_at` только после подтверждения RabbitMQ. Consumer фиксирует результат в БД до webhook; повторная доставка не запускает шлюз заново. Временная ошибка повторяется до трёх раз с задержками 1 и 2 секунды. После третьей ошибки RabbitMQ кладёт событие в `payments.dlq`; очередь доступна для просмотра в панели RabbitMQ. Результат эмулятора: задержка 2–5 секунд, успех с вероятностью 90%.
 
-## Структура
-
-`app/main.py` собирает FastAPI и запускает outbox publisher; `app/api.py` содержит только маршруты. Pydantic-модели находятся в `app/schemas.py`, доменные данные и правила — в `app/domain.py`, сценарии — в `app/service.py`. `app/dependencies.py` подключает к сервису адаптеры: SQL-операции из `app/repository.py` и HTTP-клиент из `app/webhook.py`. Подключение к БД и ORM-модели разделены между `app/db.py` и `app/models.py`; consumer и RabbitMQ находятся в `app/consumer.py`, `app/rabbit.py` и `app/outbox.py`. Переменные окружения читает `app/settings.py`.
 
 ## Разработка
 

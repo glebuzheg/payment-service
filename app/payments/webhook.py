@@ -1,6 +1,6 @@
 import httpx
 
-from app.domain import PaymentView
+from app.payments.domain import PaymentView
 
 
 async def send_result(payment: PaymentView) -> None:

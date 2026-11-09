@@ -4,9 +4,9 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Header, HTTPException
 
 from app.auth import require_key
-from app.dependencies import payment_service
-from app.domain import IdempotencyConflict, PaymentNotFound
-from app.schemas import PaymentAccepted, PaymentDetail, PaymentIn
+from app.payments.dependencies import payment_service
+from app.payments.domain import IdempotencyConflict, PaymentNotFound
+from app.payments.schemas import PaymentAccepted, PaymentDetail, PaymentIn
 
 
 router = APIRouter(prefix="/api/v1/payments", dependencies=[Depends(require_key)])

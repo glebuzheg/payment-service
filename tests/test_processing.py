@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 @pytest.mark.asyncio
 async def test_three_attempts_then_raises(monkeypatch):
-    from app.service import retry
+    from app.payments.service import retry
 
     attempts = []
     delays = []
@@ -19,7 +19,7 @@ async def test_three_attempts_then_raises(monkeypatch):
     async def sleep(delay):
         delays.append(delay)
 
-    monkeypatch.setattr("app.service.asyncio.sleep", sleep)
+    monkeypatch.setattr("app.payments.service.asyncio.sleep", sleep)
     with pytest.raises(RuntimeError, match="offline"):
         await retry(fail)
     assert len(attempts) == 3
@@ -28,9 +28,9 @@ async def test_three_attempts_then_raises(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_redelivery_keeps_result_and_commits_before_notification(monkeypatch):
-    from app import repository, service
+    from app.payments import repository, service
     from app.db import Base
-    from app.models import Payment
+    from app.payments.models import Payment
 
     engine = create_async_engine("sqlite+aiosqlite:///:memory:")
     sessions = async_sessionmaker(engine, expire_on_commit=False)
@@ -73,8 +73,8 @@ async def test_redelivery_keeps_result_and_commits_before_notification(monkeypat
 
 @pytest.mark.asyncio
 async def test_webhook_payload_and_idempotency_header(monkeypatch):
-    from app import webhook
-    from app.domain import PaymentView
+    from app.payments import webhook
+    from app.payments.domain import PaymentView
 
     sent = []
 

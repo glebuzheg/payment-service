@@ -3,7 +3,7 @@ import random
 from collections.abc import Awaitable, Callable
 from typing import Protocol
 
-from app.domain import NewPayment, PaymentView, request_hash
+from app.payments.domain import NewPayment, PaymentView, request_hash
 
 
 class PaymentStore(Protocol):

@@ -4,8 +4,8 @@ import logging
 from sqlalchemy import select
 
 from app.db import Session, now
-from app.models import Outbox
-from app.rabbit import EXCHANGE, declare_topology, new_broker
+from app.payments.models import Outbox
+from app.messaging.rabbit import EXCHANGE, declare_topology, new_broker
 
 
 logger = logging.getLogger(__name__)

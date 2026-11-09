@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from app.db import Session, now
-from app.domain import IdempotencyConflict, NewPayment, PaymentNotFound, PaymentView
-from app.models import Outbox, Payment
+from app.payments.domain import IdempotencyConflict, NewPayment, PaymentNotFound, PaymentView
+from app.payments.models import Outbox, Payment
 
 
 def to_view(payment: Payment) -> PaymentView:

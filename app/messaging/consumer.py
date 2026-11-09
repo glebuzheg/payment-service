@@ -1,7 +1,7 @@
 from faststream import FastStream
 
-from app.dependencies import payment_service
-from app.rabbit import EXCHANGE, QUEUE, declare_topology, new_broker
+from app.payments.dependencies import payment_service
+from app.messaging.rabbit import EXCHANGE, QUEUE, declare_topology, new_broker
 
 
 broker = new_broker()
