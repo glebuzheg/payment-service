@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: payment
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: payment
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payment -d payment"]
+      interval: 2s
+      retries: 20
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "127.0.0.1:15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      retries: 20
+
+  api:
+    build: .
+    command: ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+    environment: &service_env
+      DATABASE_URL: postgresql+asyncpg://payment:payment@postgres/payment
+      RABBIT_URL: amqp://guest:guest@rabbitmq:5672/
+      API_KEY: ${API_KEY:?Set API_KEY in .env}
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.create_connection(('127.0.0.1',8000),2); s.close()"]
+      interval: 2s
+      retries: 20
+
+  consumer:
+    build: .
+    command: ["faststream", "run", "app.consumer:app"]
+    environment: *service_env
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
